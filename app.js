@@ -101,7 +101,7 @@ const getSheetData = async () => {
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
                     appendToFile(`${pathFile}/dust.txt`, data);
-                    writeFile(`last-timestamp.txt`, datetime);
+                    writeFile(`${__dirname}/last-timestamp.txt`, datetime);
                 }
             }
         });

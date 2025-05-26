@@ -1,3 +1,4 @@
 .env
 key/key.json
 last-timestamp.txt
+log/bot.log

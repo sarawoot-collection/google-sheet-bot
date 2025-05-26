@@ -12,7 +12,7 @@ const log = (...text) => {
 	let now = new Date();
 	let serverTime = now.toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ');
 	let milliseconds = now.getMilliseconds().toString().padStart(3, '0');
-	log(`${serverTime}.${milliseconds} [INFO] :`, ...text);
+	console.log(`${serverTime}.${milliseconds} [INFO] :`, ...text);
 };
 
 const logerr = (...text) => {

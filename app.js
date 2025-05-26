@@ -8,12 +8,26 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 // require('dotenv').config();
 
+const log = (...text) => {
+	let now = new Date();
+	let serverTime = now.toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ');
+	let milliseconds = now.getMilliseconds().toString().padStart(3, '0');
+	log(`${serverTime}.${milliseconds} [INFO] :`, ...text);
+};
+
+const logerr = (...text) => {
+	let now = new Date();
+	let serverTime = now.toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ');
+	let milliseconds = now.getMilliseconds().toString().padStart(3, '0');
+	console.error(`${serverTime}.${milliseconds} [ERROR] :`, ...text);
+};
+
 const appendToFile = async (filePath, textToAppend) => {
     fs.appendFile(filePath, textToAppend + '\n', (err) => {
         if (err) {
             console.error('Error appending to file:', err);
         } else {
-            console.log('Text appended to file successfully.');
+            log('Text appended to file successfully.');
         }
     });
 }
@@ -23,7 +37,7 @@ const writeFile = async (filePath, text) => {
         if (err) {
             console.error('Error write to file:', err);
         } else {
-            console.log('Text write to file successfully.');
+            log('Text write to file successfully.');
         }
     });
 }
@@ -58,7 +72,7 @@ const getSheetData = async () => {
     const pathFile = `${process.env.PATH_FILE}`;
     const lastTimeStampFile = `${__dirname}/${process.env.FILE_LAST_TIMESTAMP}`;
 
-    // console.log('spreadsheetId', spreadsheetId);
+    // log('spreadsheetId', spreadsheetId);
 
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
@@ -71,13 +85,13 @@ const getSheetData = async () => {
 
     if (rows.length > 0) {
 
-        console.log('Data from Google Sheet:');
+        log('Data from Google Sheet:');
 
         rows.forEach((row, index) => {
 
             if (index == (rows.length - 1)) {
 
-                console.log(row);
+                log(row);
 
                 let datetime = row[0];
                 let pm = row[1];
@@ -86,7 +100,7 @@ const getSheetData = async () => {
                 let rh = row[4];
 
                 if (new Date(datetime) > new Date(lastTimeStamp)) {
-                    console.log('add new record!');
+                    log('add new record!');
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
                     appendToFile(`${pathFile}/dust.txt`, data);
@@ -96,14 +110,18 @@ const getSheetData = async () => {
         });
 
     } else {
-        console.log('No data found.');
+        log('No data found.');
     }
 }
 
-// console.log(`path: ${__dirname}`);
-// console.log(`pathRoot: ${process.env.PATH_ROOT}`);
-// console.log(`ID: ${process.env.SPREADSHEET_ID}`);
-// console.log(`pathFile: ${process.env.PATH_FILE}`);
-// console.log(`lastTimestamp: ${process.env.FILE_LAST_TIMESTAMP}`);
+// log(`path: ${__dirname}`);
+// log(`pathRoot: ${process.env.PATH_ROOT}`);
+// log(`ID: ${process.env.SPREADSHEET_ID}`);
+// log(`pathFile: ${process.env.PATH_FILE}`);
+// log(`lastTimestamp: ${process.env.FILE_LAST_TIMESTAMP}`);
 
-getSheetData().catch(console.error);
+try {
+	getSheetData();
+} catch (err) {
+	logerr(err)
+};

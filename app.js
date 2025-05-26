@@ -2,8 +2,11 @@ const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
 const readline = require('readline');
+const dotenv = require('dotenv');
 
-require('dotenv').config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+// require('dotenv').config();
 
 const appendToFile = async (filePath, textToAppend) => {
     fs.appendFile(filePath, textToAppend + '\n', (err) => {
@@ -41,8 +44,9 @@ const readFile = async (filePath) => {
 }
 
 const getSheetData = async () => {
+    const pathRoot = `${process.env.PATH_ROOT}`;
     const auth = new google.auth.GoogleAuth({
-        keyFile: 'key/key.json',
+        keyFile: `${__dirname}/key/key.json`,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
 
@@ -52,9 +56,9 @@ const getSheetData = async () => {
     const tabName = 'data';
     const range = `${tabName}!A2:E`;
     const pathFile = `${process.env.PATH_FILE}`;
-    const lastTimeStampFile = `${process.env.FILE_LAST_TIMESTAMP}`;
+    const lastTimeStampFile = `${__dirname}/${process.env.FILE_LAST_TIMESTAMP}`;
 
-    console.log('spreadsheetId', spreadsheetId);
+    // console.log('spreadsheetId', spreadsheetId);
 
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
@@ -95,5 +99,11 @@ const getSheetData = async () => {
         console.log('No data found.');
     }
 }
+
+// console.log(`path: ${__dirname}`);
+// console.log(`pathRoot: ${process.env.PATH_ROOT}`);
+// console.log(`ID: ${process.env.SPREADSHEET_ID}`);
+// console.log(`pathFile: ${process.env.PATH_FILE}`);
+// console.log(`lastTimestamp: ${process.env.FILE_LAST_TIMESTAMP}`);
 
 getSheetData().catch(console.error);

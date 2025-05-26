@@ -71,8 +71,6 @@ const getSheetData = async () => {
     const pathFile = `${process.env.PATH_FILE}`;
     const lastTimeStampFile = `${__dirname}/${process.env.FILE_LAST_TIMESTAMP}`;
 
-    // log('spreadsheetId', spreadsheetId);
-
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
         range,
@@ -90,7 +88,7 @@ const getSheetData = async () => {
 
             if (index == (rows.length - 1)) {
 
-                log(row);
+                log(`Last row: ${row}`);
 
                 let datetime = row[0];
                 let pm = row[1];

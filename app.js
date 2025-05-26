@@ -25,7 +25,7 @@ const logerr = (...text) => {
 const appendToFile = async (filePath, textToAppend) => {
     fs.appendFile(filePath, textToAppend + '\n', (err) => {
         if (err) {
-            console.error('Error appending to file:', err);
+            logerr('Error appending to file:', err);
         } else {
             log('Text appended to file successfully.');
         }
@@ -35,9 +35,9 @@ const appendToFile = async (filePath, textToAppend) => {
 const writeFile = async (filePath, text) => {
     fs.writeFile(filePath, text + '\n', (err) => {
         if (err) {
-            console.error('Error write to file:', err);
+            logerr('Error write to file:', err);
         } else {
-            log('Text write to file successfully.');
+            log(`Write (${text}) to file successfully.`);
         }
     });
 }
@@ -58,7 +58,6 @@ const readFile = async (filePath) => {
 }
 
 const getSheetData = async () => {
-    const pathRoot = `${process.env.PATH_ROOT}`;
     const auth = new google.auth.GoogleAuth({
         keyFile: `${__dirname}/key/key.json`,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -85,7 +84,7 @@ const getSheetData = async () => {
 
     if (rows.length > 0) {
 
-        log('Data from Google Sheet:');
+        log('Found data from Google Sheet.');
 
         rows.forEach((row, index) => {
 
@@ -100,7 +99,7 @@ const getSheetData = async () => {
                 let rh = row[4];
 
                 if (new Date(datetime) > new Date(lastTimeStamp)) {
-                    log('add new record!');
+                    log('Add new record!');
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
                     appendToFile(`${pathFile}/dust.txt`, data);
@@ -114,14 +113,11 @@ const getSheetData = async () => {
     }
 }
 
-// log(`path: ${__dirname}`);
-// log(`pathRoot: ${process.env.PATH_ROOT}`);
-// log(`ID: ${process.env.SPREADSHEET_ID}`);
-// log(`pathFile: ${process.env.PATH_FILE}`);
-// log(`lastTimestamp: ${process.env.FILE_LAST_TIMESTAMP}`);
-
 try {
+	log('start process...');
 	getSheetData();
+	log('end process...');
+
 } catch (err) {
 	logerr(err)
 };

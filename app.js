@@ -58,6 +58,7 @@ const readFile = async (filePath) => {
 }
 
 const getSheetData = async () => {
+	log('start process...');
     const auth = new google.auth.GoogleAuth({
         keyFile: `${__dirname}/key/key.json`,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -79,16 +80,17 @@ const getSheetData = async () => {
     const rows = response.data.values;
 
     const lastTimeStamp = await readFile(lastTimeStampFile);
+	log(`LastTimestamp: ${lastTimeStamp}`);
 
     if (rows.length > 0) {
-
         log('Found data from Google Sheet.');
 
-        rows.forEach((row, index) => {
+		for (ind = 0; ind < rows.length; ind++) {
+			let row = rows[ind];
 
-            if (index == (rows.length - 1)) {
+            if (ind == (rows.length - 1)) {
 
-                log(`Last row: ${row}`);
+                log(`Last row: ${row.toString()}`);
 
                 let datetime = row[0];
                 let pm = row[1];
@@ -96,25 +98,27 @@ const getSheetData = async () => {
                 let temp = row[3];
                 let rh = row[4];
 
+				log('Datetime:', datetime);
+
                 if (new Date(datetime) > new Date(lastTimeStamp)) {
                     log('Add new record!');
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
-                    appendToFile(`${pathFile}/dust.txt`, data);
-                    writeFile(`${__dirname}/last-timestamp.txt`, datetime);
+                    await appendToFile(`${pathFile}/dust.txt`, data);
+                    await writeFile(`${__dirname}/last-timestamp.txt`, datetime);
                 }
             }
-        });
+        }
 
     } else {
         log('No data found.');
     }
+
+	log('end process...');
 }
 
 try {
-	log('start process...');
 	getSheetData();
-	log('end process...');
 
 } catch (err) {
 	logerr(err)

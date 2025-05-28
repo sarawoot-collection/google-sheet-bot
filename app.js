@@ -100,8 +100,8 @@ const getSheetData = async () => {
 
 				log(`Datetime: ${datetime}`);
 
-                if (new Date(datetime) > new Date(lastTimeStamp)) {
-                    log(`Add new record!`);
+                if (new Date(datetime) != new Date(lastTimeStamp)) {
+                    log('Add new record!');
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
                     await appendToFile(`${pathFile}/dust.txt`, data);

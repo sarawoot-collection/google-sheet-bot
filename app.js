@@ -100,7 +100,7 @@ const getSheetData = async () => {
 
 				log('Datetime:', datetime);
 
-                if (new Date(datetime) > new Date(lastTimeStamp)) {
+                if (new Date(datetime) != new Date(lastTimeStamp)) {
                     log('Add new record!');
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     

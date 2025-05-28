@@ -58,7 +58,7 @@ const readFile = async (filePath) => {
 }
 
 const getSheetData = async () => {
-	log('start process...');
+	log('Start process...');
     const auth = new google.auth.GoogleAuth({
         keyFile: `${__dirname}/key/key.json`,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -83,7 +83,7 @@ const getSheetData = async () => {
 	log(`LastTimestamp: ${lastTimeStamp}`);
 
     if (rows.length > 0) {
-        log('Found data from Google Sheet.');
+        log(`Found data from Google Sheet.`);
 
 		for (ind = 0; ind < rows.length; ind++) {
 			let row = rows[ind];
@@ -98,10 +98,10 @@ const getSheetData = async () => {
                 let temp = row[3];
                 let rh = row[4];
 
-				log('Datetime:', datetime);
+				log(`Datetime: ${datetime}`);
 
                 if (new Date(datetime) > new Date(lastTimeStamp)) {
-                    log('Add new record!');
+                    log(`Add new record!`);
                     let data = `${datetime}\t${pm}\t${co2}\t${temp}\t${rh}`;
     
                     await appendToFile(`${pathFile}/dust.txt`, data);
@@ -114,7 +114,7 @@ const getSheetData = async () => {
         log('No data found.');
     }
 
-	log('end process...');
+	log('End process...');
 }
 
 try {
